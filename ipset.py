@@ -83,21 +83,19 @@ intfile += "dns-search " + dns_domain + "\n"
 
 print(intfile)
 
-hostsfile =  "127.0.0.1\tlocalhost\n"
-hostsfile += "127.0.1.1\t"+hostname+"\n"
-hostsfile += address+"\t"+hostname+"."+dns_domain+"\t"+hostname+"\n"
+hostsfile = address+"\t"+hostname+"."+dns_domain+"\t"+hostname+"\n"
+hostsfile += "127.0.1.1\t"+hostname+"."+dns_domain+"\t"+hostname+"\n"
+hostsfile +=  "127.0.0.1\tlocalhost\n"
 hostsfile += "\n::1     localhost ip6-localhost ip6-loopback\n"
 hostsfile += "ff02::1 ip6-allnodes\n"
 hostsfile += "ff02::2 ip6-allrouters\n"
 
 print(hostsfile)
 
-#open("/etc/hostname", 'w').write(hostname+"\n")
-#open("/etc/hosts", 'w').write(hostsfile)
-#open("/etc/network/interfaces", 'w').write(intfile)
+open("/etc/hostname", 'w').write(hostname+"\n")
+open("/etc/hosts", 'w').write(hostsfile)
+open("/etc/network/interfaces", 'w').write(intfile)
 
-open("/tmp/hostname", 'w').write(hostname+"\n")
-open("/tmp/hosts", 'w').write(hostsfile)
-open("/tmp/interfaces", 'w').write(intfile)
-
+subprocess.call(["ip","addr","flush",iface])
+subprocess.call(["hostname",hostname])
 subprocess.call(["systemctl","restart","networking.service"])
